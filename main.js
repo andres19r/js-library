@@ -7,6 +7,7 @@ const fPages = document.querySelector("#bpages");
 const fReaded = document.querySelector("#breaded");
 const form = document.getElementById("form");
 let removeBtn;
+let changeBtn;
 
 let myLibrary = [];
 
@@ -20,7 +21,7 @@ function Book(id, title, author, pages, readed) {
   this.title = title;
   this.author = author;
   this.pages = pages;
-  this.readed = readed === true ? "read" : "not reade yet";
+  this.readed = readed === true ? "read" : "not read yet";
   this.info = function () {
     return `${title} by ${author}, ${pages} pages, ${readed}`;
   };
@@ -33,7 +34,7 @@ function addBookToLibrary(id, title, author, pages, readed) {
 function displayBooks(myArray) {
   var result = "<table border=1>";
   result +=
-    "<tr><th>id</th><th>Title</th><th>Author</th><th>Pages</th><th>Readed?</th>";
+    "<tr><th>id</th><th>Title</th><th>Author</th><th>Pages</th><th>Status</th><th>Remove</th><th>Readed</th>";
   for (var i = 0; i < myArray.length; i++) {
     result += "<tr>";
     result += "<td>" + myArray[i].id + "</td>";
@@ -43,7 +44,11 @@ function displayBooks(myArray) {
     result += "<td>" + myArray[i].readed + "</td>";
     result +=
       "<td>" +
-      `<button class="remove-btn" id="${myArray[i].id}">REMOVE</button>` +
+      `<button class="remove-btn ${myArray[i].id}">X</button>` +
+      "</td>";
+    result +=
+      "<td>" +
+      `<button class="change-btn ${myArray[i].id}">✓</button>` +
       "</td>";
     result += "</tr>";
   }
@@ -51,7 +56,9 @@ function displayBooks(myArray) {
 
   container.innerHTML = result;
   removeBtn = document.querySelectorAll(".remove-btn");
+  changeBtn = document.querySelectorAll(".change-btn");
   addRemoveButtons();
+  addChangeButtons();
 }
 
 addBook.addEventListener("click", () => {
@@ -82,9 +89,21 @@ newBook.addEventListener("click", () => {
 function addRemoveButtons() {
   removeBtn.forEach((button) => {
     button.addEventListener("click", () => {
-      const el = myLibrary.find((lib) => lib.id == button.id);
+      const idB = button.className.split(" ")[1];
+      const el = myLibrary.findIndex((lib) => lib.id == idB);
       myLibrary.splice(el, 1);
       displayBooks(myLibrary);
+    });
+  });
+}
+
+function addChangeButtons() {
+  changeBtn.forEach((button) => {
+    button.addEventListener("click", () => {
+      const idB = button.className.split(" ")[1];
+      const el = myLibrary.findIndex((lib) => lib.id == idB);
+			myLibrary[el].readed = myLibrary[el].readed === 'read' ? 'not read yet' : 'read'
+			displayBooks(myLibrary)
     });
   });
 }
